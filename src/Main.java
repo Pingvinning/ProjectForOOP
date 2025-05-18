@@ -48,145 +48,141 @@ public class Main {
             choice = scanner.nextInt();
             scanner.nextLine();
 
-            switch (choice) {
-                case 1:
-                    // Add customer
-                    System.out.print("Enter customer name: ");
-                    String cname = scanner.nextLine();
-                    System.out.print("Enter email: ");
-                    String cemail = scanner.nextLine();
-                    System.out.print("Enter customer ID: ");
-                    int cid = scanner.nextInt();
-                    scanner.nextLine();
-                    User customer = new Customer(cname, cemail, cid); // upcasting
-                    users.add(customer);
-                    userSet.add(customer);
-                    customer.displayInfo();
-                    customer.accessSystem();
-                    System.out.println("Customer added.");
-                    break;
-                case 2:
-                    // Add admin
-                    System.out.print("Enter admin name: ");
-                    String aname = scanner.nextLine();
-                    System.out.print("Enter email: ");
-                    String aemail = scanner.nextLine();
-                    System.out.print("Enter admin ID: ");
-                    int aid = scanner.nextInt();
-                    scanner.nextLine();
-                    User admin = new Admin(aname, aemail, aid); // upcasting
-                    users.add(admin);
-                    userSet.add(admin);
-                    System.out.println("Admin added.");
-                    admin.displayInfo();
-                    admin.accessSystem();
-                    EmailNotifier emailNotifier = new EmailNotifier();
-                    emailNotifier.sendNotification(aemail);
-                    break;
-                case 3:
-                    // Show rooms
-                    System.out.println("Available rooms:");
-                    for (Room room : allRooms) {
-                        System.out.println(room.getDetails());
-                    }
-                    break;
-                case 4:
-                    // Make reservation
-                    System.out.print("Enter customer ID: ");
-                    int searchId = scanner.nextInt();
-                    scanner.nextLine();
-                    Customer foundCustomer = null;
+            if (choice == 1) {
+                System.out.print("Enter customer name: ");
+                String cname = scanner.nextLine();
+                System.out.print("Enter email: ");
+                String cemail = scanner.nextLine();
+                System.out.print("Enter customer ID: ");
+                int cid = scanner.nextInt();
+                scanner.nextLine();
+                User customer = new Customer(cname, cemail, cid); // upcasting
+                users.add(customer);
+                userSet.add(customer);
+                customer.displayInfo();
+                customer.accessSystem();
+                System.out.println("Customer added.");
+            }
+            else if (choice == 2) {
+                System.out.print("Enter admin name: ");
+                String aname = scanner.nextLine();
+                System.out.print("Enter email: ");
+                String aemail = scanner.nextLine();
+                System.out.print("Enter admin ID: ");
+                int aid = scanner.nextInt();
+                scanner.nextLine();
+                User admin = new Admin(aname, aemail, aid); // upcasting
+                users.add(admin);
+                userSet.add(admin);
+                System.out.println("Admin added.");
+                admin.displayInfo();
+                admin.accessSystem();
+                EmailNotifier emailNotifier = new EmailNotifier();
+                emailNotifier.sendNotification(aemail);
+            }
+             else if (choice == 3) {
+
+                System.out.println("Available rooms:");
+                for (Room room : allRooms) {
+                    System.out.println(room.getDetails());
+                }
+            }
+                  else if (choice == 4) {
+                System.out.print("Enter customer ID: ");
+                int searchId = scanner.nextInt();
+                scanner.nextLine();
+                Customer foundCustomer = null;
+                if (searchId > 0) {
                     for (User u : users) {
                         if (u instanceof Customer) {
                             Customer c = (Customer) u; // downcasting
+                            if (c.customerId == searchId) {
+                                foundCustomer = c;
+                            }
                         }
                     }
-                    if (foundCustomer == null) {
-                        System.out.println("Customer not found.");
-                        break;
-                    }
-                    System.out.print("Enter room number: ");
-                    int roomNumber = scanner.nextInt();
-                    scanner.nextLine();
-                    Room selectedRoom = roomMap.get(roomNumber);
-                    if (selectedRoom == null) {
-                        System.out.println("Room not found.");
-                        break;
-                    }
-                    System.out.print("Enter reservation date (yyyy-mm-dd): ");
-                    String date = scanner.nextLine();
-                    try {
-                        if (date.length() < 10) throw new InvalidDateException("Invalid date format");
-                        if (selectedRoom.price <= 0) throw new IllegalArgumentException("Room price must be positive");
-                        Reservation reservation = new Reservation(foundCustomer, selectedRoom, date);
-                        reservations.add(reservation);
-                        reservationQueue.add(reservation);
-                        System.out.println(RoomStatus.AVAILABLE + " Reservation added.");
-                    } catch (InvalidDateException ex) {
-                        System.out.println("Date Error: " + ex.getMessage());
-                    } catch (IllegalArgumentException ex) {
-                        System.out.println("Argument Error: " + ex.getMessage());
-                    }
+                }
+                if (foundCustomer == null) {
+                    System.out.println("Customer not found.");
                     break;
-                case 5:
-                    // Show reservations
-                    System.out.println("All reservations:");
-                    for (Reservation r : reservations) {
-                        System.out.println(r);
-                    }
+                }
+                System.out.print("Enter room number: ");
+                int roomNumber = scanner.nextInt();
+                scanner.nextLine();
+                Room selectedRoom = roomMap.get(roomNumber);
+                if (selectedRoom == null) {
+                    System.out.println("Room not found.");
                     break;
-                case 6:
-                    // Sort rooms by price using anonymous Comparator
-                    System.out.println("Sorting rooms by price (ascending)...");
-                    Collections.sort(allRooms, new Comparator<Room>() {
-                        @Override
-                        public int compare(Room r1, Room r2) {
-                            return Double.compare(r1.price, r2.price);
-                        }
-                    });
-                    // Print sorted
-                    for (Room r : allRooms) {
-                        System.out.println(r);
+                }
+                System.out.print("Enter reservation date (yyyy-mm-dd): ");
+                String date = scanner.nextLine();
+                try {
+                    if (date.length() < 10) throw new InvalidDateException("Invalid date format");
+                    if (selectedRoom.price <= 0) throw new IllegalArgumentException("Room price must be positive");
+                    Reservation reservation = new Reservation(foundCustomer, selectedRoom, date);
+                    reservations.add(reservation);
+                    reservationQueue.add(reservation);
+                    System.out.println(RoomStatus.AVAILABLE + " Reservation added.");
+                } catch (InvalidDateException ex) {
+                    System.out.println("Date Error: " + ex.getMessage());
+                } catch (IllegalArgumentException ex) {
+                    System.out.println("Argument Error: " + ex.getMessage());
+                }
+            }
+                  else if (choice == 5) {
+                System.out.println("All reservations:");
+                for (Reservation r : reservations) {
+                    System.out.println(r);
+                }
+            }
+                  else if (choice == 6) {
+                System.out.println("Sorting rooms by price (ascending)...");
+                Collections.sort(allRooms, new Comparator<Room>() {
+                    @Override
+                    public int compare(Room r1, Room r2) {
+                        return Double.compare(r1.price, r2.price);
                     }
+                });
+                for (Room r : allRooms) {
+                    System.out.println(r);
+                }
 
-                    // Sort rooms by number descending using anonymous Comparator
-                    System.out.println("Sorting rooms by number (descending)...");
-                    Collections.sort(allRooms, new Comparator<Room>() {
-                        @Override
-                        public int compare(Room r1, Room r2) {
-                            return Integer.compare(r2.number, r1.number);
-                        }
-                    });
-                    for (Room r : allRooms) {
+                System.out.println("Sorting rooms by number (descending)...");
+                Collections.sort(allRooms, new Comparator<Room>() {
+                    @Override
+                    public int compare(Room r1, Room r2) {
+                        return Integer.compare(r2.number, r1.number);
+                    }
+                });
+                for (Room r : allRooms) {
+                    System.out.println(r);
+                }
+            }
+                  else if (choice == 7) {
+                System.out.print("Enter room type to search (Single/Double): ");
+                String searchType = scanner.nextLine();
+                for (Room r : allRooms) {
+                    if (searchType.equalsIgnoreCase("Single") && r instanceof SingleRoom) {
+                        System.out.println(r);
+                    } else if (searchType.equalsIgnoreCase("Double") && r instanceof DoubleRoom) {
                         System.out.println(r);
                     }
-                    break;
-                case 7:
-                    System.out.print("Enter room type to search (Single/Double): ");
-                    String searchType = scanner.nextLine();
-                    for (Room r : allRooms) {
-                        if (searchType.equalsIgnoreCase("Single") && r instanceof SingleRoom) {
-                            System.out.println(r);
-                        } else if (searchType.equalsIgnoreCase("Double") && r instanceof DoubleRoom) {
-                            System.out.println(r);
-                        }
+                }
+            }
+                  else if (choice == 8) {
+                System.out.print("Enter max price: ");
+                double maxPrice = scanner.nextDouble();
+                scanner.nextLine();
+                for (Room r : allRooms) {
+                    if (r.price <= maxPrice) {
+                        System.out.println(r);
                     }
-                    break;
-                case 8:
-
-                    System.out.print("Enter max price: ");
-                    double maxPrice = scanner.nextDouble();
-                    scanner.nextLine();
-                    for (Room r : allRooms) {
-                        if (r.price <= maxPrice) {
-                            System.out.println(r);
-                        }
-                    }
-                    break;
-                case 0:
-                    System.out.println("Exiting...");
-                    break;
-                default:
+                }
+            }
+                  else if (choice == 0) {
+                System.out.println("Exiting...");
+            }
+                  else {
                     System.out.println("Invalid option.");
             }
         } while (choice != 0);
