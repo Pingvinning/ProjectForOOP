@@ -1,0 +1,4 @@
+enum RoomStatus {
+    AVAILABLE,
+    NOTFOUND
+}
