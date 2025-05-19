@@ -56,7 +56,7 @@ public class Main {
                 System.out.print("Enter customer ID: ");
                 int cid = scanner.nextInt();
                 scanner.nextLine();
-                User customer = new Customer(cname, cemail, cid); // upcasting
+                User customer = new Customer(cname, cemail, cid);
                 users.add(customer);
                 userSet.add(customer);
                 customer.displayInfo();
@@ -71,7 +71,7 @@ public class Main {
                 System.out.print("Enter admin ID: ");
                 int aid = scanner.nextInt();
                 scanner.nextLine();
-                User admin = new Admin(aname, aemail, aid); // upcasting
+                User admin = new Admin(aname, aemail, aid);
                 users.add(admin);
                 userSet.add(admin);
                 System.out.println("Admin added.");
@@ -95,7 +95,7 @@ public class Main {
                 if (searchId > 0) {
                     for (User u : users) {
                         if (u instanceof Customer) {
-                            Customer c = (Customer) u; // downcasting
+                            Customer c = (Customer) u;
                             if (c.customerId == searchId) {
                                 foundCustomer = c;
                             }

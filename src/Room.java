@@ -7,10 +7,10 @@ public abstract class Room {
         this.price = price;
     }
 
-    // 1st abstract method
+
     public abstract String getDetails();
 
-    // 2nd abstract method
+
     public abstract int getCapacity();
 
     @Override
